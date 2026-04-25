@@ -87,36 +87,36 @@ async function requireRiskAcknowledgement(params: {
       "This bot can read files and run actions if tools are enabled.",
       "A bad prompt can trick it into doing unsafe things.",
       "",
-      "OpenClaw is not a hostile multi-tenant boundary by default.",
-      "If multiple users can message one tool-enabled agent, they share that delegated tool authority.",
+      "默认情况下，OpenClaw 并不是为“敌对多租户隔离边界”设计的。",
+      "如果多个用户能给同一个“带工具权限”的智能体发消息，那么这些用户就共享该智能体所拥有的工具权限。",
       "",
-      "If you’re not comfortable with security hardening and access control, don’t run OpenClaw.",
-      "Ask someone experienced to help before enabling tools or exposing it to the internet.",
+      "如果你不熟悉安全加固与访问控制，请不要运行 OpenClaw。",
+      "在启用工具或暴露到公网之前，请先让有经验的人帮你一起检查。",
       "",
-      "Recommended baseline:",
-      "- Pairing/allowlists + mention gating.",
-      "- Multi-user/shared inbox: split trust boundaries (separate gateway/credentials, ideally separate OS users/hosts).",
-      "- Sandbox + least-privilege tools.",
-      "- Shared inboxes: isolate DM sessions (`session.dmScope: per-channel-peer`) and keep tool access minimal.",
-      "- Keep secrets out of the agent’s reachable filesystem.",
-      "- Use the strongest available model for any bot with tools or untrusted inboxes.",
+      "推荐基线：",
+      "- 配对/白名单 + 群聊提及触发（mention gating）。",
+      "- 多人/共享收件箱：拆分信任边界（独立 gateway/凭据，最好独立 OS 用户/主机）。",
+      "- 沙箱 + 最小权限工具集。",
+      "- 共享收件箱：隔离私聊会话（`session.dmScope: per-channel-peer`），并尽量减少工具权限。",
+      "- 不要让密钥/敏感信息落在智能体可访问的文件系统里。",
+      "- 对任何“有工具权限/面对不可信收件箱”的机器人，优先使用你能用到的最强模型。",
       "",
-      "Run regularly:",
+      "建议定期运行：",
       "openclaw security audit --deep",
       "openclaw security audit --fix",
       "",
-      "Must read: https://docs.openclaw.ai/gateway/security",
+      "必读：https://docs.openclaw.ai/gateway/security",
     ].join("\n"),
     "Security",
   );
 
   const ok = await params.prompter.confirm({
     message:
-      "I understand this is personal-by-default and shared/multi-user use requires lock-down. Continue?",
+      "我理解：默认只适合个人使用；多人/共享使用需要安全加固与严格访问控制。是否继续？",
     initialValue: false,
   });
   if (!ok) {
-    throw new WizardCancelledError("risk not accepted");
+    throw new WizardCancelledError("未接受风险提示，已退出设置");
   }
 }
 
@@ -127,7 +127,7 @@ export async function runSetupWizard(
 ) {
   const onboardHelpers = await import("../commands/onboard-helpers.js");
   onboardHelpers.printWizardHeader(runtime);
-  await prompter.intro("OpenClaw setup");
+  await prompter.intro("OpenClaw 设置向导");
   await requireRiskAcknowledgement({ opts, prompter });
 
   const snapshot = await readConfigFileSnapshot();
@@ -138,7 +138,7 @@ export async function runSetupWizard(
     : {};
 
   if (snapshot.exists && !snapshot.valid) {
-    await prompter.note(onboardHelpers.summarizeExistingConfig(baseConfig), "Invalid config");
+    await prompter.note(onboardHelpers.summarizeExistingConfig(baseConfig), "配置无效");
     if (snapshot.issues.length > 0) {
       await prompter.note(
         [
@@ -146,11 +146,11 @@ export async function runSetupWizard(
           "",
           "Docs: https://docs.openclaw.ai/gateway/configuration",
         ].join("\n"),
-        "Config issues",
+        "配置问题",
       );
     }
     await prompter.outro(
-      `Config invalid. Run \`${formatCliCommand("openclaw doctor")}\` to repair it, then re-run setup.`,
+      `配置无效。请运行 \`${formatCliCommand("openclaw doctor")}\` 修复后再重新运行设置向导。`,
     );
     runtime.exit(1);
     return;
@@ -162,23 +162,21 @@ export async function runSetupWizard(
   if (compatibilityNotices.length > 0) {
     await prompter.note(
       [
-        `Detected ${compatibilityNotices.length} plugin compatibility notice${compatibilityNotices.length === 1 ? "" : "s"} in the current config.`,
+        `在当前配置中检测到 ${compatibilityNotices.length} 条插件兼容性提示。`,
         ...compatibilityNotices
           .slice(0, 4)
           .map((notice) => `- ${formatPluginCompatibilityNotice(notice)}`),
-        ...(compatibilityNotices.length > 4
-          ? [`- ... +${compatibilityNotices.length - 4} more`]
-          : []),
+        ...(compatibilityNotices.length > 4 ? [`- ... 还有 ${compatibilityNotices.length - 4} 条`] : []),
         "",
-        `Review: ${formatCliCommand("openclaw doctor")}`,
-        `Inspect: ${formatCliCommand("openclaw plugins inspect --all")}`,
+        `查看：${formatCliCommand("openclaw doctor")}`,
+        `检查：${formatCliCommand("openclaw plugins inspect --all")}`,
       ].join("\n"),
-      "Plugin compatibility",
+      "插件兼容性",
     );
   }
 
-  const quickstartHint = `Configure details later via ${formatCliCommand("openclaw configure")}.`;
-  const manualHint = "Configure port, network, Tailscale, and auth options.";
+  const quickstartHint = `稍后可通过 ${formatCliCommand("openclaw configure")} 继续完善设置。`;
+  const manualHint = "配置端口、网络、Tailscale 以及认证选项。";
   const explicitFlowRaw = opts.flow?.trim();
   const normalizedExplicitFlow = explicitFlowRaw === "manual" ? "advanced" : explicitFlowRaw;
   if (
@@ -186,7 +184,7 @@ export async function runSetupWizard(
     normalizedExplicitFlow !== "quickstart" &&
     normalizedExplicitFlow !== "advanced"
   ) {
-    runtime.error("Invalid --flow (use quickstart, manual, or advanced).");
+    runtime.error("无效的 --flow（可用：quickstart、manual、advanced）。");
     runtime.exit(1);
     return;
   }
@@ -197,18 +195,18 @@ export async function runSetupWizard(
   let flow: WizardFlow =
     explicitFlow ??
     (await prompter.select({
-      message: "Setup mode",
+      message: "设置模式",
       options: [
-        { value: "quickstart", label: "QuickStart", hint: quickstartHint },
-        { value: "advanced", label: "Manual", hint: manualHint },
+        { value: "quickstart", label: "快速开始", hint: quickstartHint },
+        { value: "advanced", label: "手动/高级", hint: manualHint },
       ],
       initialValue: "quickstart",
     }));
 
   if (opts.mode === "remote" && flow === "quickstart") {
     await prompter.note(
-      "QuickStart only supports local gateways. Switching to Manual mode.",
-      "QuickStart",
+      "快速开始仅支持本地网关，将自动切换到手动/高级模式。",
+      "快速开始",
     );
     flow = "advanced";
   }
@@ -216,15 +214,15 @@ export async function runSetupWizard(
   if (snapshot.exists) {
     await prompter.note(
       onboardHelpers.summarizeExistingConfig(baseConfig),
-      "Existing config detected",
+      "检测到已有配置",
     );
 
     const action = await prompter.select({
-      message: "Config handling",
+      message: "如何处理现有配置",
       options: [
-        { value: "keep", label: "Use existing values" },
-        { value: "modify", label: "Update values" },
-        { value: "reset", label: "Reset" },
+        { value: "keep", label: "沿用现有值" },
+        { value: "modify", label: "修改现有值" },
+        { value: "reset", label: "重置" },
       ],
     });
 
@@ -232,16 +230,16 @@ export async function runSetupWizard(
       const workspaceDefault =
         baseConfig.agents?.defaults?.workspace ?? onboardHelpers.DEFAULT_WORKSPACE;
       const resetScope = (await prompter.select({
-        message: "Reset scope",
+        message: "重置范围",
         options: [
-          { value: "config", label: "Config only" },
+          { value: "config", label: "仅配置" },
           {
             value: "config+creds+sessions",
-            label: "Config + creds + sessions",
+            label: "配置 + 凭据 + 会话",
           },
           {
             value: "full",
-            label: "Full reset (config + creds + sessions + workspace)",
+            label: "完全重置（配置 + 凭据 + 会话 + 工作区）",
           },
         ],
       })) as ResetScope;

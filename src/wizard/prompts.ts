@@ -46,7 +46,7 @@ export type WizardPrompter = {
 };
 
 export class WizardCancelledError extends Error {
-  constructor(message = "wizard cancelled") {
+  constructor(message = "已取消设置") {
     super(message);
     this.name = "WizardCancelledError";
   }
