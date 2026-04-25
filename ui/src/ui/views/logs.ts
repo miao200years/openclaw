@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { t } from "../../i18n/index.ts";
 import type { LogEntry, LogLevel } from "../types.ts";
 
 const LEVELS: LogLevel[] = ["trace", "debug", "info", "warn", "error", "fatal"];
@@ -84,7 +85,7 @@ export function renderLogs(props: LogsProps) {
           <input
             .value=${props.filterText}
             @input=${(e: Event) => props.onFilterTextChange((e.target as HTMLInputElement).value)}
-            placeholder="Search logs"
+            placeholder=${t("logs.searchPlaceholder")}
           />
         </label>
         <label class="field checkbox">

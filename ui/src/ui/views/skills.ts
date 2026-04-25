@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { ref } from "lit/directives/ref.js";
+import { t } from "../../i18n/index.ts";
 import type { SkillMessageMap } from "../controllers/skills.ts";
 import { clampText } from "../format.ts";
 import { resolveSafeExternalUrl } from "../open-external-url.ts";
@@ -145,14 +146,14 @@ export function renderSkills(props: SkillsProps) {
           href="https://clawhub.com"
           target="_blank"
           rel="noreferrer"
-          title="Browse skills on ClawHub"
+          title=${t("a11y.browseSkillsOnClawHub")}
           >Browse Skills Store</a
         >
         <label class="field" style="flex: 1; min-width: 180px;">
           <input
             .value=${props.filter}
             @input=${(e: Event) => props.onFilterChange((e.target as HTMLInputElement).value)}
-            placeholder="Search skills"
+            placeholder=${t("skills.searchPlaceholder")}
             autocomplete="off"
             name="skills-filter"
           />

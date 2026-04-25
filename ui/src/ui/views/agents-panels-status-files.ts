@@ -3,6 +3,7 @@ import DOMPurify from "dompurify";
 import { html, nothing } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { marked } from "marked";
+import { t } from "../../i18n/index.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { icons } from "../icons.ts";
 import {
@@ -39,7 +40,7 @@ function renderAgentContextCard(
               type="button"
               class="workspace-link mono"
               @click=${() => onSelectPanel("files")}
-              title="Open Files tab"
+              title=${t("a11y.openFilesTab")}
             >
               ${context.workspace}
             </button>
@@ -423,7 +424,7 @@ export function renderAgentFiles(params: {
                       <div class="agent-file-actions">
                         <button
                           class="btn btn--sm"
-                          title="Preview rendered markdown"
+                          title=${t("a11y.previewMarkdown")}
                           @click=${(e: Event) => {
                             const btn = e.currentTarget as HTMLElement;
                             const dialog = btn.closest(".card")?.querySelector("dialog");
@@ -490,7 +491,7 @@ export function renderAgentFiles(params: {
                           <div class="md-preview-dialog__actions">
                             <button
                               class="btn btn--sm md-preview-expand-btn"
-                              title="Toggle fullscreen"
+                              title=${t("a11y.toggleFullscreen")}
                               @click=${(e: Event) => {
                                 const btn = e.currentTarget as HTMLElement;
                                 const panel = btn.closest(".md-preview-dialog__panel");
@@ -506,7 +507,7 @@ export function renderAgentFiles(params: {
                             </button>
                             <button
                               class="btn btn--sm"
-                              title="Edit file"
+                              title=${t("a11y.editFile")}
                               @click=${(e: Event) => {
                                 (e.currentTarget as HTMLElement).closest("dialog")?.close();
                                 const textarea =

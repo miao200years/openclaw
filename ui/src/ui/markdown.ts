@@ -252,7 +252,7 @@ htmlEscapeRenderer.code = ({
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-  const copyBtn = `<button type="button" class="code-block-copy" data-code="${attrSafe}" aria-label="Copy code"><span class="code-block-copy__idle">Copy</span><span class="code-block-copy__done">Copied!</span></button>`;
+  const copyBtn = `<button type="button" class="code-block-copy" data-code="${attrSafe}" aria-label="复制代码"><span class="code-block-copy__idle">复制</span><span class="code-block-copy__done">已复制！</span></button>`;
   const header = `<div class="code-block-header">${langLabel}${copyBtn}</div>`;
 
   const trimmed = text.trim();

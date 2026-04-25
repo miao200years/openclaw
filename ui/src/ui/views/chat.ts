@@ -1,4 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
+import { t } from "../../i18n/index.ts";
 import { ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import type {
@@ -469,7 +470,7 @@ function renderAttachmentPreview(props: ChatProps): TemplateResult | typeof noth
             <button
               class="chat-attachment-remove"
               type="button"
-              aria-label="Remove attachment"
+              aria-label=${t("a11y.removeAttachment")}
               @click=${() => {
                 const next = (props.attachments ?? []).filter((a) => a.id !== att.id);
                 props.onAttachmentsChange?.(next);
@@ -686,8 +687,8 @@ function renderSearchBar(requestUpdate: () => void): TemplateResult | typeof not
       ${icons.search}
       <input
         type="text"
-        placeholder="Search messages..."
-        aria-label="Search messages"
+        placeholder=${t("chat.searchPlaceholder")}
+        aria-label=${t("a11y.searchMessages")}
         .value=${vs.searchQuery}
         @input=${(e: Event) => {
           vs.searchQuery = (e.target as HTMLInputElement).value;
@@ -696,7 +697,7 @@ function renderSearchBar(requestUpdate: () => void): TemplateResult | typeof not
       />
       <button
         class="btn btn--ghost"
-        aria-label="Close search"
+        aria-label=${t("a11y.closeSearch")}
         @click=${() => {
           vs.searchOpen = false;
           vs.searchQuery = "";
@@ -761,7 +762,7 @@ function renderPinnedSection(
                         pinned.unpin(index);
                         requestUpdate();
                       }}
-                      title="Unpin"
+                      title=${t("chat.unpin")}
                     >
                       ${icons.x}
                     </button>
@@ -787,7 +788,7 @@ function renderSlashMenu(
   // Arg-picker mode: show options for the selected command
   if (vs.slashMenuMode === "args" && vs.slashMenuCommand && vs.slashMenuArgItems.length > 0) {
     return html`
-      <div class="slash-menu" role="listbox" aria-label="Command arguments">
+      <div class="slash-menu" role="listbox" aria-label=${t("a11y.commandArguments")}>
         <div class="slash-menu-group">
           <div class="slash-menu-group__label">
             /${vs.slashMenuCommand.name} ${vs.slashMenuCommand.description}
@@ -882,7 +883,7 @@ function renderSlashMenu(
   }
 
   return html`
-    <div class="slash-menu" role="listbox" aria-label="Slash commands">
+    <div class="slash-menu" role="listbox" aria-label=${t("a11y.slashCommands")}>
       ${sections}
       <div class="slash-menu-footer">
         <kbd>↑↓</kbd> navigate <kbd>Tab</kbd> fill <kbd>Enter</kbd> select <kbd>Esc</kbd> close
@@ -956,7 +957,7 @@ export function renderChat(props: ChatProps) {
         ${
           props.loading
             ? html`
-                <div class="chat-loading-skeleton" aria-label="Loading chat">
+                <div class="chat-loading-skeleton" aria-label=${t("a11y.loadingChat")}>
                   <div class="chat-line assistant">
                     <div class="chat-msg">
                       <div class="chat-bubble">
@@ -1177,8 +1178,8 @@ export function renderChat(props: ChatProps) {
               class="chat-focus-exit"
               type="button"
               @click=${props.onToggleFocusMode}
-              aria-label="Exit focus mode"
-              title="Exit focus mode"
+              aria-label=${t("a11y.exitFocusMode")}
+              title=${t("chat.exitFocusMode")}
             >
               ${icons.x}
             </button>
@@ -1238,7 +1239,7 @@ export function renderChat(props: ChatProps) {
                       <button
                         class="btn chat-queue__remove"
                         type="button"
-                        aria-label="Remove queued message"
+                        aria-label=${t("a11y.removeQueuedMessage")}
                         @click=${() => props.onQueueRemove(item.id)}
                       >
                         ${icons.x}
@@ -1301,8 +1302,8 @@ export function renderChat(props: ChatProps) {
               @click=${() => {
                 document.querySelector<HTMLInputElement>(".agent-chat__file-input")?.click();
               }}
-              title="Attach file"
-              aria-label="Attach file"
+              title=${t("chat.attachFile")}
+              aria-label=${t("a11y.attachFile")}
               ?disabled=${!props.connected}
             >
               ${icons.paperclip}
@@ -1375,8 +1376,8 @@ export function renderChat(props: ChatProps) {
                   <button
                     class="btn btn--ghost"
                     @click=${props.onNewSession}
-                    title="New session"
-                    aria-label="New session"
+                    title=${t("chat.newSession")}
+                    aria-label=${t("a11y.newSession")}
                   >
                     ${icons.plus}
                   </button>
@@ -1385,8 +1386,8 @@ export function renderChat(props: ChatProps) {
             <button
               class="btn btn--ghost"
               @click=${() => exportMarkdown(props)}
-              title="Export"
-              aria-label="Export chat"
+              title=${t("chat.export")}
+              aria-label=${t("a11y.exportChat")}
               ?disabled=${props.messages.length === 0}
             >
               ${icons.download}
@@ -1398,8 +1399,8 @@ export function renderChat(props: ChatProps) {
                   <button
                     class="chat-send-btn chat-send-btn--stop"
                     @click=${props.onAbort}
-                    title="Stop"
-                    aria-label="Stop generating"
+                    title=${t("chat.stop")}
+                    aria-label=${t("a11y.stopGenerating")}
                   >
                     ${icons.stop}
                   </button>

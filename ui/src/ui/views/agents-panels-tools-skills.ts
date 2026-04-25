@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { normalizeToolName } from "../../../../src/agents/tool-policy-shared.js";
+import { t } from "../../i18n/index.ts";
 import type {
   SkillStatusEntry,
   SkillStatusReport,
@@ -518,7 +519,7 @@ export function renderAgentSkills(params: {
           <input
             .value=${params.filter}
             @input=${(e: Event) => params.onFilterChange((e.target as HTMLInputElement).value)}
-            placeholder="Search skills"
+            placeholder=${t("skills.searchPlaceholder")}
             autocomplete="off"
             name="agent-skills-filter"
           />

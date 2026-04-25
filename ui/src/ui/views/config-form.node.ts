@@ -1,4 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
+import { t } from "../../i18n/index.ts";
 import { icons as sharedIcons } from "../icons.ts";
 import type { ConfigUiHints } from "../types.ts";
 import {
@@ -733,7 +734,7 @@ function renderTextInput(params: {
               <button
                 type="button"
                 class="cfg-input__reset"
-                title="Reset to default"
+                title=${t("config.resetToDefault")}
                 ?disabled=${disabled || effectiveRedacted}
                 @click=${() => onPatch(path, schema.default)}
               >
@@ -1112,7 +1113,7 @@ function renderArray(params: {
                       <button
                         type="button"
                         class="cfg-array__item-remove"
-                        title="Remove item"
+                        title=${t("config.removeItem")}
                         ?disabled=${disabled}
                         @click=${() => {
                           const next = [...arr];
@@ -1240,7 +1241,7 @@ function renderMapField(params: {
                         <input
                           type="text"
                           class="cfg-input cfg-input--sm"
-                          placeholder="Key"
+                          placeholder=${t("config.keyPlaceholder")}
                           .value=${key}
                           ?disabled=${disabled}
                           @change=${(e: Event) => {
@@ -1261,7 +1262,7 @@ function renderMapField(params: {
                       <button
                         type="button"
                         class="cfg-map__item-remove"
-                        title="Remove entry"
+                        title=${t("config.removeEntry")}
                         ?disabled=${disabled}
                         @click=${() => {
                           const next = { ...value };

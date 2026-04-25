@@ -1020,7 +1020,7 @@ export function renderCron(props: CronProps) {
                 <div class="cron-help">${t("cron.form.clearAgentHelp")}</div>
               </label>
               <label class="field cron-span-2">
-                ${renderFieldLabel("Session key")}
+                ${renderFieldLabel(t("cronExtra.sessionKey"))}
                 <input
                   id="cron-session-key"
                   .value=${props.form.sessionKey}
@@ -1091,7 +1091,7 @@ export function renderCron(props: CronProps) {
               ${isAgentTurn
                 ? html`
                     <label class="field cron-span-2">
-                      ${renderFieldLabel("Account ID")}
+                      ${renderFieldLabel(t("cronExtra.accountId"))}
                       <input
                         id="cron-delivery-account-id"
                         .value=${props.form.deliveryAccountId}
@@ -1154,7 +1154,7 @@ export function renderCron(props: CronProps) {
               ${isAgentTurn
                 ? html`
                     <label class="field cron-span-2">
-                      ${renderFieldLabel("Failure alerts")}
+                      ${renderFieldLabel(t("cronExtra.failureAlerts"))}
                       <select
                         .value=${props.form.failureAlertMode}
                         @change=${(e: Event) =>
@@ -1174,7 +1174,7 @@ export function renderCron(props: CronProps) {
                     ${props.form.failureAlertMode === "custom"
                       ? html`
                           <label class="field">
-                            ${renderFieldLabel("Alert after")}
+                            ${renderFieldLabel(t("cronExtra.alertAfter"))}
                             <input
                               id="cron-failure-alert-after"
                               .value=${props.form.failureAlertAfter}
@@ -1222,7 +1222,7 @@ export function renderCron(props: CronProps) {
                             )}
                           </label>
                           <label class="field">
-                            ${renderFieldLabel("Alert channel")}
+                            ${renderFieldLabel(t("cronExtra.alertChannel"))}
                             <select
                               .value=${props.form.failureAlertChannel || "last"}
                               @change=${(e: Event) =>
@@ -1239,7 +1239,7 @@ export function renderCron(props: CronProps) {
                             </select>
                           </label>
                           <label class="field">
-                            ${renderFieldLabel("Alert to")}
+                            ${renderFieldLabel(t("cronExtra.alertTo"))}
                             <input
                               .value=${props.form.failureAlertTo}
                               list="cron-delivery-to-suggestions"
@@ -1254,7 +1254,7 @@ export function renderCron(props: CronProps) {
                             </div>
                           </label>
                           <label class="field">
-                            ${renderFieldLabel("Alert mode")}
+                            ${renderFieldLabel(t("cronExtra.alertMode"))}
                             <select
                               .value=${props.form.failureAlertDeliveryMode || "announce"}
                               @change=${(e: Event) =>
@@ -1268,14 +1268,14 @@ export function renderCron(props: CronProps) {
                             </select>
                           </label>
                           <label class="field">
-                            ${renderFieldLabel("Alert account ID")}
+                            ${renderFieldLabel(t("cronExtra.alertAccountId"))}
                             <input
                               .value=${props.form.failureAlertAccountId}
                               @input=${(e: Event) =>
                                 props.onFormChange({
                                   failureAlertAccountId: (e.target as HTMLInputElement).value,
                                 })}
-                              placeholder="Account ID for multi-account setups"
+                              placeholder=${t("cronExtra.accountIdPlaceholder")}
                             />
                           </label>
                         `

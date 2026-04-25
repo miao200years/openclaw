@@ -1,98 +1,62 @@
 import { getSafeLocalStorage } from "../../local-storage.ts";
-import { en } from "../locales/en.ts";
-import {
-  DEFAULT_LOCALE,
-  SUPPORTED_LOCALES,
-  isSupportedLocale,
-  loadLazyLocaleTranslation,
-  resolveNavigatorLocale,
-} from "./registry.ts";
+import { zh_CN } from "../locales/zh-CN.ts";
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES, isSupportedLocale } from "./registry.ts";
 import type { Locale, TranslationMap } from "./types.ts";
 
 type Subscriber = (locale: Locale) => void;
 
 export { SUPPORTED_LOCALES, isSupportedLocale };
 
+/**
+ * I18nManager —— 中文独占版本。
+ *
+ * 设计要点：
+ * - Control UI 锁定为简体中文（zh-CN），不再支持运行时语言切换。
+ * - zh-CN 翻译在模块加载时同步就绪，消除首屏英文闪烁问题。
+ * - 保留 setLocale / subscribe / registerTranslation 等 API，
+ *   以便既有组件无需修改即可继续工作，但任何非 zh-CN 的目标
+ *   语言都会被静默忽略。
+ */
 class I18nManager {
-  private locale: Locale = DEFAULT_LOCALE;
-  private translations: Partial<Record<Locale, TranslationMap>> = { [DEFAULT_LOCALE]: en };
+  private locale: Locale = "zh-CN";
+  private translations: Partial<Record<Locale, TranslationMap>> = { "zh-CN": zh_CN };
   private subscribers: Set<Subscriber> = new Set();
 
   constructor() {
-    this.loadLocale();
+    // 清理历史版本遗留在 localStorage 中的其他语言偏好，
+    // 避免用户升级后依然读到不再支持的 locale 值。
+    this.normalizeStoredLocale();
   }
 
-  private readStoredLocale(): string | null {
-    const storage = getSafeLocalStorage();
-    if (!storage) {
-      return null;
-    }
-    try {
-      return storage.getItem("openclaw.i18n.locale");
-    } catch {
-      return null;
-    }
-  }
-
-  private persistLocale(locale: Locale) {
+  private normalizeStoredLocale() {
     const storage = getSafeLocalStorage();
     if (!storage) {
       return;
     }
     try {
-      storage.setItem("openclaw.i18n.locale", locale);
+      const saved = storage.getItem("openclaw.i18n.locale");
+      if (saved !== "zh-CN") {
+        storage.setItem("openclaw.i18n.locale", "zh-CN");
+      }
     } catch {
-      // Ignore storage write failures in private/blocked contexts.
+      // 私有/受限存储场景忽略。
     }
-  }
-
-  private resolveInitialLocale(): Locale {
-    const saved = this.readStoredLocale();
-    if (isSupportedLocale(saved)) {
-      return saved;
-    }
-    const language =
-      typeof globalThis.navigator?.language === "string" ? globalThis.navigator.language : null;
-    return resolveNavigatorLocale(language ?? "");
-  }
-
-  private loadLocale() {
-    const initialLocale = this.resolveInitialLocale();
-    if (initialLocale === DEFAULT_LOCALE) {
-      this.locale = DEFAULT_LOCALE;
-      return;
-    }
-    // Use the normal locale setter so startup locale loading follows the same
-    // translation-loading + notify path as manual locale changes.
-    void this.setLocale(initialLocale);
   }
 
   public getLocale(): Locale {
     return this.locale;
   }
 
+  /**
+   * 中文独占模式下仅接受 "zh-CN"，其他目标语言请求将被忽略。
+   * 保留 async 签名以保持 API 兼容。
+   */
   public async setLocale(locale: Locale) {
-    const needsTranslationLoad = locale !== DEFAULT_LOCALE && !this.translations[locale];
-    if (this.locale === locale && !needsTranslationLoad) {
+    if (locale !== "zh-CN") {
       return;
     }
-
-    if (needsTranslationLoad) {
-      try {
-        const translation = await loadLazyLocaleTranslation(locale);
-        if (!translation) {
-          return;
-        }
-        this.translations[locale] = translation;
-      } catch (e) {
-        console.error(`Failed to load locale: ${locale}`, e);
-        return;
-      }
-    }
-
-    this.locale = locale;
-    this.persistLocale(locale);
-    this.notify();
+    // 已经是 zh-CN，无需触发通知。
+    return;
   }
 
   public registerTranslation(locale: Locale, map: TranslationMap) {
@@ -118,19 +82,6 @@ class I18nManager {
       } else {
         value = undefined;
         break;
-      }
-    }
-
-    // Fallback to English.
-    if (value === undefined && this.locale !== DEFAULT_LOCALE) {
-      value = this.translations[DEFAULT_LOCALE];
-      for (const k of keys) {
-        if (value && typeof value === "object") {
-          value = (value as Record<string, unknown>)[k];
-        } else {
-          value = undefined;
-          break;
-        }
       }
     }
 

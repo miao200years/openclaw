@@ -482,7 +482,9 @@ describe("chat view", () => {
     expect(groupedLogo?.getAttribute("src")).toBe("/openclaw/favicon.svg");
   });
 
-  it("keeps the persisted overview locale selected before i18n hydration finishes", async () => {
+  it("keeps the persisted overview locale selected in zh-CN lock mode", async () => {
+    // Control UI 已切换为中文独占：setLocale 对非 zh-CN 的请求是 no-op，
+    // 因此这里只验证 zh-CN 下的 overview 渲染行为保持正确。
     const container = document.createElement("div");
     const props = createOverviewProps({
       settings: {
@@ -492,25 +494,14 @@ describe("chat view", () => {
     });
 
     getSafeLocalStorage()?.clear();
-    await i18n.setLocale("en");
-
-    render(renderOverview(props), container);
-    await Promise.resolve();
-
-    let select = container.querySelector<HTMLSelectElement>("select");
-    expect(i18n.getLocale()).toBe("en");
-    expect(select?.value).toBe("zh-CN");
-    expect(select?.selectedOptions[0]?.textContent?.trim()).toBe("简体中文 (Simplified Chinese)");
-
     await i18n.setLocale("zh-CN");
+
     render(renderOverview(props), container);
     await Promise.resolve();
 
-    select = container.querySelector<HTMLSelectElement>("select");
+    const select = container.querySelector<HTMLSelectElement>("select");
+    expect(i18n.getLocale()).toBe("zh-CN");
     expect(select?.value).toBe("zh-CN");
-    expect(select?.selectedOptions[0]?.textContent?.trim()).toBe("简体中文 (简体中文)");
-
-    await i18n.setLocale("en");
   });
 
   it("renders compacting indicator as a badge", () => {
@@ -682,11 +673,11 @@ describe("chat view", () => {
       container,
     );
 
-    const stopButton = container.querySelector<HTMLButtonElement>('button[title="Stop"]');
+    const stopButton = container.querySelector<HTMLButtonElement>('button[title="停止"]');
     expect(stopButton).not.toBeUndefined();
     stopButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     expect(onAbort).toHaveBeenCalledTimes(1);
-    expect(container.textContent).not.toContain("New session");
+    expect(container.textContent).not.toContain("新建会话");
   });
 
   it("shows a new session button when aborting is unavailable", () => {
@@ -703,12 +694,12 @@ describe("chat view", () => {
     );
 
     const newSessionButton = container.querySelector<HTMLButtonElement>(
-      'button[title="New session"]',
+      'button[title="新建会话"]',
     );
     expect(newSessionButton).not.toBeUndefined();
     newSessionButton?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
     expect(onNewSession).toHaveBeenCalledTimes(1);
-    expect(container.textContent).not.toContain("Stop");
+    expect(container.textContent).not.toContain("停止");
   });
 
   it("shows sender labels from sanitized gateway messages instead of generic You", () => {

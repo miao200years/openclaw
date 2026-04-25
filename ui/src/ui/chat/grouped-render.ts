@@ -1,5 +1,6 @@
 import { html, nothing } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { t } from "../../i18n/index.ts";
 import { getSafeLocalStorage } from "../../local-storage.ts";
 import type { AssistantIdentity } from "../assistant-identity.ts";
 import { icons } from "../icons.ts";
@@ -377,8 +378,8 @@ function renderDeleteButton(onDelete: () => void, side: DeleteConfirmSide) {
     <span class="chat-delete-wrap">
       <button
         class="chat-group-delete"
-        title="Delete"
-        aria-label="Delete message"
+        title="${t("common.delete")}"
+        aria-label="${t("chat.deleteMessage")}"
         @click=${(e: Event) => {
           if (shouldSkipDeleteConfirm()) {
             onDelete();
@@ -660,8 +661,8 @@ function renderExpandButton(markdown: string, onOpenSidebar: (content: string) =
     <button
       class="btn btn--xs chat-expand-btn"
       type="button"
-      title="Open in canvas"
-      aria-label="Open in canvas"
+      title="${t("chat.openInCanvas")}"
+      aria-label="${t("chat.openInCanvas")}"
       @click=${() => onOpenSidebar(markdown)}
     >
       <span class="chat-expand-btn__icon" aria-hidden="true">${icons.panelRightOpen}</span>

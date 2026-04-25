@@ -1,4 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
+import { t } from "../../i18n/index.ts";
 import { icons } from "../icons.ts";
 import { BORDER_RADIUS_STOPS, type BorderRadiusStop } from "../storage.ts";
 import type { ThemeTransitionContext } from "../theme-transition.ts";
@@ -874,8 +875,8 @@ export function renderConfig(props: ConfigProps) {
                     <input
                       type="text"
                       class="config-search__input"
-                      placeholder="Search settings..."
-                      aria-label="Search settings"
+                      placeholder=${t("config.searchPlaceholder")}
+                      aria-label=${t("a11y.searchSettings")}
                       .value=${props.searchQuery}
                       @input=${(e: Event) =>
                         props.onSearchChange((e.target as HTMLInputElement).value)}
@@ -884,7 +885,7 @@ export function renderConfig(props: ConfigProps) {
                       ? html`
                           <button
                             class="config-search__clear"
-                            aria-label="Clear search"
+                            aria-label=${t("a11y.clearSearch")}
                             @click=${() => props.onSearchChange("")}
                           >
                             ×
@@ -896,7 +897,7 @@ export function renderConfig(props: ConfigProps) {
               `
             : nothing}
 
-          <div class="config-top-tabs__scroller" role="tablist" aria-label="Settings sections">
+          <div class="config-top-tabs__scroller" role="tablist" aria-label=${t("a11y.settingsSections")}>
             ${topTabs.map(
               (tab) => html`
                 <button
@@ -1098,7 +1099,7 @@ export function renderConfig(props: ConfigProps) {
                                 title=${blurred
                                   ? "Reveal sensitive values"
                                   : "Hide sensitive values"}
-                                aria-label="Toggle raw config redaction"
+                                aria-label=${t("a11y.toggleRawConfigRedaction")}
                                 aria-pressed=${!blurred}
                                 @click=${() => {
                                   cvs.rawRevealed = !cvs.rawRevealed;
@@ -1119,7 +1120,7 @@ export function renderConfig(props: ConfigProps) {
                           `
                         : html`
                             <textarea
-                              placeholder="Raw config (JSON/JSON5)"
+                              placeholder=${t("config.rawConfigPlaceholder")}
                               .value=${props.raw}
                               @input=${(e: Event) => {
                                 props.onRawChange((e.target as HTMLTextAreaElement).value);

@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { t } from "../../i18n/index.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import { icons } from "../icons.ts";
 import { pathForTab } from "../navigation.ts";
@@ -295,7 +296,7 @@ export function renderSessions(props: SessionsProps) {
           <div class="data-table-search">
             <input
               type="text"
-              placeholder="Filter by key, label, kind…"
+               placeholder=${t("sessions.filterPlaceholder")}
               .value=${props.searchQuery}
               @input=${(e: Event) => props.onSearchChange((e.target as HTMLInputElement).value)}
             />
@@ -338,7 +339,7 @@ export function renderSessions(props: SessionsProps) {
                             props.onSelectPage(paginated.map((r) => r.key));
                           }
                         }}
-                        aria-label="Select all on page"
+                         aria-label=${t("a11y.selectAllOnPage")}
                       />`
                     : nothing}
                 </th>
@@ -462,7 +463,7 @@ function renderRow(
           type="checkbox"
           .checked=${selected}
           @change=${() => onToggleSelect(row.key)}
-          aria-label="Select session"
+           aria-label=${t("a11y.selectSession")}
         />
       </td>
       <td class="data-table-key-col">

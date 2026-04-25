@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { t } from "../../i18n/index.ts";
 import { icons } from "../icons.ts";
 import { formatPresenceAge } from "../presenter.ts";
 import type { PresenceEntry } from "../types.ts";
@@ -31,7 +32,7 @@ export function renderInstances(props: InstancesProps) {
               props.onRefresh();
             }}
             title=${masked ? "Show hosts and IPs" : "Hide hosts and IPs"}
-            aria-label="Toggle host visibility"
+            aria-label=${t("a11y.toggleHostVisibility")}
             aria-pressed=${!masked}
             style="width: 36px; height: 36px;"
           >

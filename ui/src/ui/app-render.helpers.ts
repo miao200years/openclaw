@@ -389,8 +389,8 @@ export function renderChatMobileToggle(state: AppViewState) {
             }
           }
         }}
-        title="Chat settings"
-        aria-label="Chat settings"
+        title=${t("a11y.chatSettings")}
+        aria-label=${t("a11y.chatSettings")}
       >
         <svg
           width="18"
@@ -536,7 +536,7 @@ function renderChatModelSelect(state: AppViewState) {
     <label class="field chat-controls__session chat-controls__model">
       <select
         data-chat-model-select="true"
-        aria-label="Chat model"
+        aria-label=${t("a11y.chatModel")}
         ?disabled=${disabled}
         @change=${async (e: Event) => {
           const next = (e.target as HTMLSelectElement).value.trim();
@@ -936,7 +936,7 @@ export function renderTopbarThemeModeToggle(state: AppViewState) {
   };
 
   return html`
-    <div class="topbar-theme-mode" role="group" aria-label="Color mode">
+    <div class="topbar-theme-mode" role="group" aria-label=${t("a11y.colorMode")}>
       ${THEME_MODE_OPTIONS.map(
         (opt) => html`
           <button
@@ -945,7 +945,7 @@ export function renderTopbarThemeModeToggle(state: AppViewState) {
               ? "topbar-theme-mode__btn--active"
               : ""}"
             title=${opt.label}
-            aria-label="Color mode: ${opt.label}"
+            aria-label=${t("a11y.colorModeWithLabel", { label: opt.label })}
             aria-pressed=${opt.id === state.themeMode}
             @click=${(e: Event) => applyMode(opt.id, e)}
           >
@@ -968,8 +968,8 @@ export function renderSidebarConnectionStatus(state: AppViewState) {
       class="sidebar-version__status ${toneClass}"
       role="img"
       aria-live="polite"
-      aria-label="Gateway status: ${label}"
-      title="Gateway status: ${label}"
+      aria-label=${t("a11y.gatewayStatus", { label })}
+      title=${t("a11y.gatewayStatus", { label })}
     ></span>
   `;
 }
@@ -1019,11 +1019,11 @@ export function renderThemeToggle(state: AppViewState) {
   };
 
   return html`
-    <div class="theme-orb" aria-label="Theme">
+    <div class="theme-orb" aria-label=${t("a11y.theme")}>
       <button
         type="button"
         class="theme-orb__trigger"
-        title="Theme"
+        title=${t("a11y.theme")}
         aria-haspopup="menu"
         aria-expanded="false"
         @click=${toggleOpen}

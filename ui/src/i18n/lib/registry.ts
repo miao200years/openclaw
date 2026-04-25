@@ -1,71 +1,28 @@
+// 语言锁定：Control UI 仅提供简体中文（zh-CN）。
+// 保留 Locale 联合类型以兼容既有 locale 文件的类型签名，
+// 但运行时仅暴露并返回 "zh-CN"，忽略任何其他语言请求。
 import type { Locale, TranslationMap } from "./types.ts";
 
-type LazyLocale = Exclude<Locale, "en">;
-type LocaleModule = Record<string, TranslationMap>;
+export const DEFAULT_LOCALE: Locale = "zh-CN";
 
-type LazyLocaleRegistration = {
-  exportName: string;
-  loader: () => Promise<LocaleModule>;
-};
-
-export const DEFAULT_LOCALE: Locale = "en";
-
-const LAZY_LOCALES: readonly LazyLocale[] = ["zh-CN", "zh-TW", "pt-BR", "de", "es"];
-
-const LAZY_LOCALE_REGISTRY: Record<LazyLocale, LazyLocaleRegistration> = {
-  "zh-CN": {
-    exportName: "zh_CN",
-    loader: () => import("../locales/zh-CN.ts"),
-  },
-  "zh-TW": {
-    exportName: "zh_TW",
-    loader: () => import("../locales/zh-TW.ts"),
-  },
-  "pt-BR": {
-    exportName: "pt_BR",
-    loader: () => import("../locales/pt-BR.ts"),
-  },
-  de: {
-    exportName: "de",
-    loader: () => import("../locales/de.ts"),
-  },
-  es: {
-    exportName: "es",
-    loader: () => import("../locales/es.ts"),
-  },
-};
-
-export const SUPPORTED_LOCALES: ReadonlyArray<Locale> = [DEFAULT_LOCALE, ...LAZY_LOCALES];
+export const SUPPORTED_LOCALES: ReadonlyArray<Locale> = ["zh-CN"] as const;
 
 export function isSupportedLocale(value: string | null | undefined): value is Locale {
-  return value !== null && value !== undefined && SUPPORTED_LOCALES.includes(value as Locale);
+  return value === "zh-CN";
 }
 
-function isLazyLocale(locale: Locale): locale is LazyLocale {
-  return LAZY_LOCALES.includes(locale as LazyLocale);
+/**
+ * 中文独占模式下，navigator 语言探测永远返回 zh-CN。
+ * 保留参数签名以兼容调用方。
+ */
+export function resolveNavigatorLocale(_navLang?: string): Locale {
+  return "zh-CN";
 }
 
-export function resolveNavigatorLocale(navLang: string): Locale {
-  if (navLang.startsWith("zh")) {
-    return navLang === "zh-TW" || navLang === "zh-HK" ? "zh-TW" : "zh-CN";
-  }
-  if (navLang.startsWith("pt")) {
-    return "pt-BR";
-  }
-  if (navLang.startsWith("de")) {
-    return "de";
-  }
-  if (navLang.startsWith("es")) {
-    return "es";
-  }
-  return DEFAULT_LOCALE;
-}
-
-export async function loadLazyLocaleTranslation(locale: Locale): Promise<TranslationMap | null> {
-  if (!isLazyLocale(locale)) {
-    return null;
-  }
-  const registration = LAZY_LOCALE_REGISTRY[locale];
-  const module = await registration.loader();
-  return module[registration.exportName] ?? null;
+/**
+ * 中文独占模式下不再有"非默认语言"，懒加载路径直接返回 null，
+ * 保留函数是为了兼容 translate.ts 的旧调用点。
+ */
+export async function loadLazyLocaleTranslation(_locale: Locale): Promise<TranslationMap | null> {
+  return null;
 }

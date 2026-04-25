@@ -452,7 +452,7 @@ export function renderApp(state: AppViewState) {
                 state.paletteOpen = !state.paletteOpen;
               }}
               title="Search or jump to… (⌘K)"
-              aria-label="Open command palette"
+              aria-label="${t("a11y.openCommandPalette")}"
             >
               <span class="topbar-search__label">${t("common.search")}</span>
               <kbd class="topbar-search__kbd">⌘K</kbd>
@@ -595,8 +595,8 @@ export function renderApp(state: AppViewState) {
               <button
                 class="update-banner__close"
                 type="button"
-                title="Dismiss"
-                aria-label="Dismiss update banner"
+                title="${t("a11y.dismissUpdateBanner")}"
+                aria-label="${t("a11y.dismissUpdateBanner")}"
                 @click=${() => {
                   dismissUpdateBanner(state.updateAvailable);
                   state.updateAvailable = null;

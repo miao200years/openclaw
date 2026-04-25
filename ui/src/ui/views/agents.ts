@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { t } from "../../i18n/index.ts";
 import type {
   AgentIdentityResult,
   AgentsFilesListResult,
@@ -174,7 +175,7 @@ export function renderAgents(props: AgentsProps) {
                     type="button"
                     class="btn btn--sm btn--ghost"
                     @click=${() => void navigator.clipboard.writeText(selectedAgent.id)}
-                    title="Copy agent ID to clipboard"
+                    title=${t("agents.copyIdTitle")}
                   >
                     Copy ID
                   </button>
