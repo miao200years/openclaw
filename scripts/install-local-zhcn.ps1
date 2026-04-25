@@ -142,11 +142,11 @@ Write-Host "[openclaw-zhCN] pnpm: $(pnpm -v)"
 Write-Host "[openclaw-zhCN] 安装依赖 (pnpm install) ..."
 pnpm install
 
-Write-Host "[openclaw-zhCN] 构建 Control UI (pnpm ui:build) ..."
-pnpm ui:build
-
 Write-Host "[openclaw-zhCN] 构建主项目 (pnpm build) ..."
 pnpm build
+
+Write-Host "[openclaw-zhCN] 构建 Control UI (pnpm ui:build) ..."
+pnpm ui:build
 
 Write-Host "[openclaw-zhCN] 全局安装当前源码版本 (npm i -g .) ..."
 npm i -g .

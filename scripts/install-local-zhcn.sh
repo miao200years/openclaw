@@ -132,11 +132,11 @@ pnpm config set registry "$NPM_REGISTRY" >/dev/null 2>&1 || true
 echo "[openclaw-zhCN] 安装依赖 (pnpm install) ..."
 pnpm install
 
-echo "[openclaw-zhCN] 构建 Control UI (pnpm ui:build) ..."
-pnpm ui:build
-
 echo "[openclaw-zhCN] 构建主项目 (pnpm build) ..."
 pnpm build
+
+echo "[openclaw-zhCN] 构建 Control UI (pnpm ui:build) ..."
+pnpm ui:build
 
 echo "[openclaw-zhCN] 全局安装当前源码版本 (npm i -g .) ..."
 npm i -g .
