@@ -10,6 +10,7 @@
 OpenClaw 是一个你可以**自己部署/自己掌控**的个人 AI 助手与网关（Gateway）：它把你常用的聊天渠道（如 Telegram、WhatsApp、Slack、Discord 等）连接到 AI 智能体，并提供 CLI 与 Web 控制界面。
 
 - **仓库内中文文档入口**: [`docs/zh-CN/index.md`](docs/zh-CN/index.md)
+- **GitHub 直接可读的中文快速开始**（推荐从这里看）: [`docs/zh-CN/GITHUB.md`](docs/zh-CN/GITHUB.md)
 - **入门指南（中文）**: [`docs/zh-CN/start/getting-started.md`](docs/zh-CN/start/getting-started.md)
 
 ## 最快可用路径（推荐）
