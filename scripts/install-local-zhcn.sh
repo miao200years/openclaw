@@ -32,24 +32,55 @@ ensure_local_node() {
   fi
 
   local tarball="node-${NODE_VERSION}-darwin-${arch}.tar.gz"
-  local url="https://nodejs.org/dist/${NODE_VERSION}/${tarball}"
+  local urls=(
+    "https://nodejs.org/dist/${NODE_VERSION}/${tarball}"
+    "https://registry.npmmirror.com/-/binary/node/${NODE_VERSION}/${tarball}"
+    "https://mirrors.tuna.tsinghua.edu.cn/nodejs-release/${NODE_VERSION}/${tarball}"
+    "https://mirrors.huaweicloud.com/nodejs/${NODE_VERSION}/${tarball}"
+    "https://mirrors.aliyun.com/nodejs-release/${NODE_VERSION}/${tarball}"
+  )
 
-  echo "[openclaw-zhCN] 未找到 npm，开始下载 Node ${NODE_VERSION} (${arch}) 到 ${LOCAL_NODE_DIR} ..."
+  echo "[openclaw-zhCN] 未找到 npm，准备下载 Node ${NODE_VERSION} (${arch}) 到 ${LOCAL_NODE_DIR} ..."
   mkdir -p "$LOCAL_NODE_DIR"
 
   local tmp
   tmp="$(mktemp -d)"
   trap 'rm -rf "$tmp"' EXIT
 
-  if ! curl -fL --retry 3 -o "$tmp/$tarball" "$url"; then
+  local ok=0
+  local url
+  for url in "${urls[@]}"; do
+    echo "[openclaw-zhCN] 尝试下载: $url"
+    if curl -fL \
+        --connect-timeout 10 \
+        --max-time 600 \
+        --retry 2 --retry-delay 2 \
+        --progress-bar \
+        -o "$tmp/$tarball" "$url"; then
+      echo "[openclaw-zhCN] 下载成功 ✅"
+      ok=1
+      break
+    else
+      echo "[openclaw-zhCN] 该镜像不可用，尝试下一个..."
+      rm -f "$tmp/$tarball"
+    fi
+  done
+
+  if [[ "$ok" -ne 1 ]]; then
     cat <<EOF
-[openclaw-zhCN] 下载 Node 失败：$url
+[openclaw-zhCN] 下载 Node 失败：所有镜像都不可达。
 
-可能原因：你的网络访问 nodejs.org 不通。
+可能原因：
+  - 你当前处于受限网络，无法访问 nodejs.org / npmmirror / 清华 / 华为云 / 阿里云
+  - 公司/校园网代理拦截了上述域名
 
-替代办法（任选其一）：
-  1) 换网络后重试本脚本：bash scripts/install-local-zhcn.sh
-  2) 自己装官方 Node 包后重试：https://nodejs.org/
+可选方案：
+  1) 切换到能访问外网的网络（手机热点等）后重试：
+       bash scripts/install-local-zhcn.sh
+  2) 自己下载 Node 后再运行本脚本：
+       去官网 https://nodejs.org/zh-cn/download/ 下载 macOS 安装包并安装
+       然后重试：
+         bash scripts/install-local-zhcn.sh
 EOF
     exit 1
   fi
@@ -71,13 +102,17 @@ if need_cmd npm; then
   ensure_local_node
 fi
 
-# Re-export PATH if local node exists, in case user already had it.
 if [[ -x "$LOCAL_NODE_DIR/bin/node" ]]; then
   export PATH="$LOCAL_NODE_DIR/bin:$PATH"
 fi
 
 echo "[openclaw-zhCN] node: $(node -v)"
 echo "[openclaw-zhCN] npm:  $(npm -v)"
+
+# Use China npm mirror to speed up dependency installs.
+NPM_REGISTRY="${OPENCLAW_NPM_REGISTRY:-https://registry.npmmirror.com}"
+echo "[openclaw-zhCN] npm registry: $NPM_REGISTRY"
+npm config set registry "$NPM_REGISTRY" >/dev/null 2>&1 || true
 
 if ! need_cmd corepack; then
   echo "[openclaw-zhCN] 启用 corepack ..."
@@ -92,6 +127,7 @@ else
 fi
 
 echo "[openclaw-zhCN] pnpm: $(pnpm -v)"
+pnpm config set registry "$NPM_REGISTRY" >/dev/null 2>&1 || true
 
 echo "[openclaw-zhCN] 安装依赖 (pnpm install) ..."
 pnpm install
