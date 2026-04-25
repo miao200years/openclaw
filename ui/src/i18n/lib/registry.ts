@@ -1,6 +1,6 @@
 import type { Locale, TranslationMap } from "./types.ts";
 
-type LazyLocale = Exclude<Locale, "en">;
+type LazyLocale = Exclude<Locale, "zh-CN">;
 type LocaleModule = Record<string, TranslationMap>;
 
 type LazyLocaleRegistration = {
@@ -8,14 +8,15 @@ type LazyLocaleRegistration = {
   loader: () => Promise<LocaleModule>;
 };
 
-export const DEFAULT_LOCALE: Locale = "en";
+// Chinese-first fork: default UI language is Simplified Chinese.
+export const DEFAULT_LOCALE: Locale = "zh-CN";
 
-const LAZY_LOCALES: readonly LazyLocale[] = ["zh-CN", "zh-TW", "pt-BR", "de", "es"];
+const LAZY_LOCALES: readonly LazyLocale[] = ["en", "zh-TW", "pt-BR", "de", "es"];
 
 const LAZY_LOCALE_REGISTRY: Record<LazyLocale, LazyLocaleRegistration> = {
-  "zh-CN": {
-    exportName: "zh_CN",
-    loader: () => import("../locales/zh-CN.ts"),
+  en: {
+    exportName: "en",
+    loader: () => import("../locales/en.ts"),
   },
   "zh-TW": {
     exportName: "zh_TW",
@@ -58,7 +59,7 @@ export function resolveNavigatorLocale(navLang: string): Locale {
   if (navLang.startsWith("es")) {
     return "es";
   }
-  return DEFAULT_LOCALE;
+  return "en";
 }
 
 export async function loadLazyLocaleTranslation(locale: Locale): Promise<TranslationMap | null> {
