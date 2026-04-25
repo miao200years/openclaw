@@ -101,18 +101,18 @@ export function resolveGatewayDisconnectState(reason?: string): {
   activityStatus: string;
   pairingHint?: string;
 } {
-  const reasonLabel = reason?.trim() ? reason.trim() : "closed";
+  const reasonLabel = reason?.trim() ? reason.trim() : "连接已关闭";
   if (/pairing required/i.test(reasonLabel)) {
     return {
-      connectionStatus: `gateway disconnected: ${reasonLabel}`,
-      activityStatus: "pairing required: run openclaw devices list",
+      connectionStatus: `网关已断开连接：${reasonLabel}`,
+      activityStatus: "需要配对：运行 openclaw devices list",
       pairingHint:
-        "Pairing required. Run `openclaw devices list`, approve your request ID, then reconnect.",
+        "需要配对。请运行 `openclaw devices list`，批准你的 requestId，然后重新连接。",
     };
   }
   return {
-    connectionStatus: `gateway disconnected: ${reasonLabel}`,
-    activityStatus: "idle",
+    connectionStatus: `网关已断开连接：${reasonLabel}`,
+    activityStatus: "空闲",
   };
 }
 

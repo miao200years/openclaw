@@ -157,14 +157,14 @@ describe("resolveGatewayDisconnectState", () => {
   it("returns pairing recovery guidance when disconnect reason requires pairing", () => {
     const state = resolveGatewayDisconnectState("gateway closed (1008): pairing required");
     expect(state.connectionStatus).toContain("pairing required");
-    expect(state.activityStatus).toBe("pairing required: run openclaw devices list");
+    expect(state.activityStatus).toBe("需要配对：运行 openclaw devices list");
     expect(state.pairingHint).toContain("openclaw devices list");
   });
 
   it("falls back to idle for generic disconnect reasons", () => {
     const state = resolveGatewayDisconnectState("network timeout");
-    expect(state.connectionStatus).toBe("gateway disconnected: network timeout");
-    expect(state.activityStatus).toBe("idle");
+    expect(state.connectionStatus).toBe("网关已断开连接：network timeout");
+    expect(state.activityStatus).toBe("空闲");
     expect(state.pairingHint).toBeUndefined();
   });
 });
