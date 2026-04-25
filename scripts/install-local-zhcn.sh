@@ -18,7 +18,22 @@ if need_cmd npm; then
   echo "[openclaw-zhCN] npm 不存在：需要一个带 npm 的 Node 安装。"
   if command -v brew >/dev/null 2>&1; then
     echo "[openclaw-zhCN] 使用 Homebrew 安装 node（含 npm/corepack）..."
-    brew install node
+    if ! brew install node; then
+      cat <<'EOF'
+[openclaw-zhCN] Homebrew 安装 node 失败（你这台系统可能是 macOS Sequoia，但 brew 识别异常）。
+
+请改用“官方 Node 安装包”（自带 npm）：
+  https://nodejs.org/
+
+安装完成后重新打开终端，确认：
+  node -v
+  npm -v
+
+然后重新运行：
+  bash scripts/install-local-zhcn.sh
+EOF
+      exit 1
+    fi
   else
     cat <<'EOF'
 [openclaw-zhCN] 检测到你当前环境只有 node，没有 npm/corepack。
