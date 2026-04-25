@@ -13,6 +13,24 @@ OpenClaw 是一个你可以**自己部署/自己掌控**的个人 AI 助手与�
 - **GitHub 直接可读的中文快速开始**（推荐从这里看）: [`docs/zh-CN/GITHUB.md`](docs/zh-CN/GITHUB.md)
 - **入门指南（中文）**: [`docs/zh-CN/start/getting-started.md`](docs/zh-CN/start/getting-started.md)
 
+## 一键安装（自动构建你这版中文 OpenClaw）
+
+- **macOS / Linux**:
+
+```bash
+cd <仓库根目录>
+bash scripts/install-local-zhcn.sh
+```
+
+- **Windows (PowerShell)**:
+
+```powershell
+cd <仓库根目录>
+powershell -ExecutionPolicy Bypass -File scripts\install-local-zhcn.ps1
+```
+
+脚本会自己下载 Node（含国内镜像回退）、安装 pnpm、构建并把 `openclaw` 全局安装。
+
 ## 最快可用路径（推荐）
 
 > 目标：不要求你先配置任何聊天渠道，先把 Gateway 跑起来并能在浏览器里聊天。
